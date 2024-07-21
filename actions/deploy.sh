@@ -11,7 +11,7 @@ run_remote() {
 
 # deploys binaries
 deploy_changed_binaries() {
-    run_remote ./ztn-sandbox_deploy.sh 
+    #TODO 
 }
 
 deploy_changed_binaries

@@ -1,30 +1,30 @@
 #!/bin/bash
 
-# PROJECT: ZTN linux
+# PROJECT: <name>
 # the builder creds
 export REMOTE_USER="user" #builder
-export REMOTE_HOST="172.17.120.149"
-export PATH_TO_PASS="/home/anast/.remote/pdeb7"
+export REMOTE_HOST=""
+export PATH_TO_PASS=""
 
 # the sandbox creds
 export REMOTE_USER_SANDBOX="anast"
-export REMOTE_SANDBOX="172.17.120.196"
-export PATH_TO_PASS_SANDBOX="/home/anast/.remote/sandbox-ztn"
+export REMOTE_SANDBOX=""
+export PATH_TO_PASS_SANDBOX=""
 
 # branches (not used currently) #TODO fix
 export CURR_BRANCH="master"
 export MASTER_BRANCH="master"
 
 # path to the project on the builder 
-export PROJECT_DIR_REMOTE="/home/user/repos/ztn-linux" 
+export PROJECT_DIR_REMOTE="" 
 # path to the project locally
-export PROJECT_DIR_LOCAL="/home/anast/repo/ztn-linux"
+export PROJECT_DIR_LOCAL=""
 # path to the project on the sandbox
-export PROJECT_DIR_SANDBOX="/home/anast/repo/ztn-linux"
+export PROJECT_DIR_SANDBOX=""
 # the directory name, where the binary three appears
-export BINARY_TREE="install" 
+export BINARY_TREE="" 
 # paths not to sync, ever
-export EXCLUDE_PATH="/home/anast/repo/devel/ztn/ztn-exclude.txt" 
+export EXCLUDE_PATH="" 
 
 
 reset_remote_and_sync() {

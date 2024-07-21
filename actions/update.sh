@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#TODO: for no-save, use clean, not stash
 usage() {
     echo '
     Usage: update.sh <command>  updates the repository in @PROJECT_DIR_REMOTE

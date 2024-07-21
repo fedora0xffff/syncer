@@ -2,7 +2,7 @@
 dir="$(dirname "$0")"
 source "${dir}/printer.sh"
 
-#TODO: config file with variables
+#TODO: move env vars info to a manager script
 usage() {
     echo '
     Usage example: sync.sh sync <dir_to_sync> <sync_direction>   synchronizes changes (by def., from local to remote with stash)
