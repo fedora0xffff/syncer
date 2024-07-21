@@ -9,10 +9,6 @@ run_remote() {
     sshpass -f $PATH_TO_PASS ssh -t $REMOTE_USER@$REMOTE_HOST "${command}"
 }
 
-# build_release() {
-#     run_remote "./ztn-builder_do.sh rel"
-# }
-
 build_debug() {
     run_remote "./ztn-builder_do.sh"
 }
