@@ -1,29 +1,33 @@
 #!/bin/bash
 
-# PROJECT: <name>
+# PROJECT: <name> used for display
+export PROJECT_NAME=""
 # the builder creds
-export REMOTE_USER="user" #builder
-export REMOTE_HOST=""
-export PATH_TO_PASS=""
+export BUILDER_REMOTE_USER="user" #builder
+#remote host ip
+export BUILDER_REMOTE_HOST=""
+#path to the pass file used by the sshpass
+export BUILDER_PASS_FILE=""
 
 # the sandbox creds
-export REMOTE_USER_SANDBOX="anast"
-export REMOTE_SANDBOX=""
-export PATH_TO_PASS_SANDBOX=""
+export SANDBOX_REMOTE_USER""
+export SANDBOX_REMOTE_HOST=""
+export SANDBOX_PASS_FILE=""
 
-# branches (not used currently) #TODO fix
+# branches 
 export CURR_BRANCH="master"
 export MASTER_BRANCH="master"
 
 # path to the project on the builder 
-export PROJECT_DIR_REMOTE="" 
+export BUILDER_PROJECT_DIR="" 
 # path to the project locally
-export PROJECT_DIR_LOCAL=""
+export LOCAL_PROJECT_DIR=""
 # path to the project on the sandbox
-export PROJECT_DIR_SANDBOX=""
-# the directory name, where the binary three appears
+export SANDBOX_PROJECT_DIR=""
+# the directory name, where the binary tree appears
 export BINARY_TREE="" 
-# paths not to sync, ever
+# paths not to sync, ever 
+# TODO: use filters
 export EXCLUDE_PATH="" 
 
 
@@ -85,6 +89,12 @@ set-scripts-sbx)
 set-all)
     ./syncer_engine/sync.sh send-files-sandbox "$(realpath scripts_for_infrastructure/ztn-sandbox_deploy.sh)"
     ./syncer_engine/sync.sh send-files-builder "$(realpath scripts_for_infrastructure/ztn-builder_do.sh)"
+    ;;
+# TODO: combine the commands into batches, e.g., sync-build - upload local changes && build
+set-branch)
+    # scenario: after creating a new branch locally, update the builder and check it out to the same branch
+    # this must take the new branch's name
+    actions/update.sh 
     ;;
 download)
     load_from_remote

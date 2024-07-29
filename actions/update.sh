@@ -5,6 +5,8 @@ usage() {
     echo '
     Usage: update.sh <command>  updates the repository in @PROJECT_DIR_REMOTE
     Options:
+    set-branch                  update from master && set the new <branch>
+    
     upd-curr                    download updates from the @CURRENT_BRANCH having saved changes
     upd-curr-no-stash           download updates from the @CURRENT_BRANCH without saving
     merge-master                download updates from the @MASTER_BRANCH having saved changes
@@ -16,20 +18,13 @@ usage() {
     '
 }
 
-# update the local repository
-update_local_repo() {
-    git --work-tree=$PROJECT_DIR_LOCAL --git-dir=$PROJECT_DIR_LOCAL/.git stash
-    git --work-tree=$PROJECT_DIR_LOCAL --git-dir=$PROJECT_DIR_LOCAL/.git pull -r
-    git --work-tree=$PROJECT_DIR_LOCAL --git-dir=$PROJECT_DIR_LOCAL/.git stash pop
+git_base_cmd="git --work-tree=$BUILDER_PROJECT_DIR --git-dir=$BUILDER_PROJECT_DIR/.git"
 
-    retval=$?
-    if [[ retval -ne 0 ]]; then
-        print_message "git exits woth non-zero result, check for the conflicts" e
-        exit 1
-    fi
-}
+git_checkout="$git_base_cmd checkout"
+git_pull="$git_base_cmd pull"
+git_clean="$git_base_cmd clean -fr"
+git_merge="$git_base merge" 
 
-#
 # run a command on the remote @REMOTE_HOST as @REMOTE_USER
 run_remote() {
     local command=$1
@@ -38,37 +33,23 @@ run_remote() {
     sshpass -f $PATH_TO_PASS ssh -t $REMOTE_USER@$REMOTE_HOST "${command}"
 }
 
-# update the remote repo from the current branch with stash or without
-# 1 - with_stash: 0 - don't save current changes, 1 - save current changes (default)
-update_remote_from_current() {
-    local with_stash="${1:-1}"
-
-    local git_pull="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git pull -r"
-    local git_stash="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git stash"
-    local git_stash_pop="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git stash pop"
-
-    if [[ $with_stash -eq 1 ]]; then
-        run_remote "$git_stash && $git_pull && $git_stash_pop"
-    else
-        run_remote "$git_stash && $git_pull"
-    fi 
+# checkout to <branch>
+# param to_branch - the branch name to checkout to
+checkout_to() {
+    local to_branch="$1"
+    
+    $git_clean 
+    $git_pull
+    $git_checkout "$to_branch"
 }
 
-# checkout to @CURR_BRANCH
-# master: 0 - current branch @CURR_BRANCH, 1 - master branch @MASTER_BRANCH (default)
-checkout_remote() {
-    local master="${1:-1}"
+merge_master_to() {
+    local to_branch="$1"
+    
+}
 
-    local git_stash="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git stash"
-    local git_checkout="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git checkout $CURR_BRANCH"
-    local git_checkout_master="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git checkout $MASTER_BRANCH"
-    local git_pull="git --work-tree=$PROJECT_DIR_REMOTE --git-dir=$PROJECT_DIR_REMOTE/.git pull -r"
+pull_from_master() {
 
-    if [[ $master -eq 1 ]]; then 
-        run_remote "$git_stash && $git_checkout_master && $git_pull"
-    else
-        run_remote "$git_stash && $git_checkout && $git_pull"
-    fi
 }
 
 # update the remote repo from the master branch with stash or without
