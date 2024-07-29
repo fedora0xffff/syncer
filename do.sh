@@ -37,7 +37,7 @@ reset_remote_and_sync() {
 }
 
 update_from_local() {
-    ./syncer_engine/sync.sh sync
+    
 }
 
 update_sandbox() {
@@ -58,10 +58,6 @@ sync_remote_branch() {
     ./syncer_engine/update.sh checkout-current
 }
 
-diff() {
-    ./syncer_engine/sync.sh diff
-}
-
 do_build_test_iteration() {
     update_from_local
     ./syncer_engine/build.sh debug
@@ -80,39 +76,38 @@ do_build_test_iteration() {
 # or for 4,5,6 use a single command - iterate 
 
 case $1 in #TODO: separate bldr and sb -- snapshots
-set-scripts-builder)
-    ./syncer_engine/sync.sh send-files-builder "$(realpath scripts_for_infrastructure/ztn-builder_do.sh)"
+set-builder)
+    ./actions/sync.sh send-files-builder "$(realpath scripts_for_infrastructure/ztn-builder_do.sh)"
     ;;
-set-scripts-sbx)
-    ./syncer_engine/sync.sh send-files-sandbox "$(realpath scripts_for_infrastructure/ztn-sandbox_deploy.sh)"
-    ;;
-set-all)
-    ./syncer_engine/sync.sh send-files-sandbox "$(realpath scripts_for_infrastructure/ztn-sandbox_deploy.sh)"
-    ./syncer_engine/sync.sh send-files-builder "$(realpath scripts_for_infrastructure/ztn-builder_do.sh)"
+set-sbx)
+    ./actions/sync.sh send-files-sandbox "$(realpath scripts_for_infrastructure/ztn-sandbox_deploy.sh)"
     ;;
 # TODO: combine the commands into batches, e.g., sync-build - upload local changes && build
 set-branch)
     # scenario: after creating a new branch locally, update the builder and check it out to the same branch
     # this must take the new branch's name
-    actions/update.sh 
+    ./actions/update.sh 
     ;;
 download)
-    load_from_remote
+    ./actions/sync.sh sync 1
     ;;
 upload)
-    update_from_local
+    ./actions/sync.sh sync
     ;;
 diff)
-    diff
+    ./actions/sync.sh diff
     ;;
 build)
-    update_from_local
-    ./syncer_engine/build.sh debug
-    load_from_remote
+    ./actions/sync.sh sync
+    ./actions/build.sh debug
+    ./actions/sync.sh sync 1
     ;;
 update-sandbox)
-    ./syncer_engine/sync.sh get-index-and-sync
-    #./syncer_engine/deploy.sh 
+    ./actions/sync.sh get-index-and-sync
+    #./actions/deploy.sh 
+    ;;
+to-branch)
+    #delete all changes, go to master/custom branch, pull
     ;;
 iterate)
     do_build_test_iteration
@@ -123,13 +118,13 @@ send-package)
 *) 
 echo '
     Options:
-    set-remote-scripts      install remote scripts to sb and bldr 
     download                just load remote changes
     upload                  just upload local changes
     diff                    show diffs
     build                   build the debug version and download
-    update-sandbox          sync buns to sandbox and deploy
-'
+
+    ... 
+    '
     ;;
 esac
 
